@@ -15,6 +15,7 @@ import {FormsModule} from '@angular/forms';
 import {AppRoutingModule } from '../app/app-routing/app-routing.module';
 import {MatSelectModule} from '@angular/material/select';
 import {MatSlideToggleModule} from '@angular/material/slide-toggle';
+import {MatSliderModule} from '@angular/material/slider'
 import {ReactiveFormsModule} from '@angular/forms';
 import {AppComponent } from './app.component';
 import {MatProgressSpinnerModule} from '@angular/material/progress-spinner';
@@ -64,7 +65,8 @@ import { LoginComponent } from './login/login.component';
     MatSelectModule,
     MatSlideToggleModule,
     ReactiveFormsModule,
-    MatProgressSpinnerModule
+    MatProgressSpinnerModule,
+    MatSliderModule
   ],
   entryComponents:[LoginComponent],
   providers: [DishService,PromotionService, LeadersService],

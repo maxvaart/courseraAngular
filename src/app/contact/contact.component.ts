@@ -45,6 +45,7 @@ export class ContactComponent implements OnInit {
 
   ngOnInit(): void {
   }
+
   createForm(){
     this.feedbackForm = this.fb.group({
       firstname: ["", [Validators.required, Validators.minLength(2),Validators.maxLength(25)]],
@@ -59,6 +60,7 @@ export class ContactComponent implements OnInit {
     .subscribe(data=>this.onValueChanged(data));
     this.onValueChanged();
   }
+
   onSubmit(){
     this.feedback = this.feedbackForm.value;
     console.log(this.feedback);
@@ -73,6 +75,7 @@ export class ContactComponent implements OnInit {
     });
     this.feedbackFormDirectives.resetForm();
   }
+  
   onValueChanged(data?:any){
     if(!this.feedbackForm){return};
     const form = this.feedbackForm;
