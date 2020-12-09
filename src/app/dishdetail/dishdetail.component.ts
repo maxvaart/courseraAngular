@@ -1,4 +1,4 @@
-import { Component, Input, OnInit, ViewChild } from '@angular/core';
+import { Component, Input, OnInit, ViewChild,Inject } from '@angular/core';
 import {FormBuilder, FormGroup, Validators} from '@angular/forms';
 import { Dish } from '../shared/dish';
 import {DishService} from '../services/dish.service';
@@ -6,6 +6,8 @@ import {Params , ActivatedRoute} from '@angular/router';
 import {getLocaleDateFormat, Location} from '@angular/common';
 import {switchMap} from 'rxjs/operators';
 import {Comment} from '../shared/comment';
+import { parseHostBindings } from '@angular/compiler';
+
 
 
 @Component({
@@ -18,6 +20,7 @@ export class DishdetailComponent implements OnInit {
   @ViewChild('commentaryform') commentaryFormDirectives;
   commentaryForm:FormGroup;
   saved:Comment;
+  errMess: string;
   comment:Comment = {
     'author' : '',
     'rating':0,
@@ -45,14 +48,14 @@ export class DishdetailComponent implements OnInit {
     }
   };
 
-  constructor(private dishService: DishService, private route : ActivatedRoute, private location : Location, private fb: FormBuilder) {
+  constructor(private dishService: DishService, private route : ActivatedRoute, private location : Location, private fb: FormBuilder, @Inject('BaseURL') public BaseURL) {
     this.createForm();
    }
 
   ngOnInit(): void {
     this.dishService.getDishId().subscribe(dishIds=> this.dishIds = dishIds);
     this.route.params.pipe(switchMap((params: Params)=>this.dishService.getDish(params['id'])))
-    .subscribe(dish=>{this.dish = dish; this.setPrevNext(dish.id);})
+    .subscribe(dish=>{this.dish = dish, this.setPrevNext(dish.id), errMess => this.errMess = <any>errMess})
     
   }
 
