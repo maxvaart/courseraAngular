@@ -7,13 +7,27 @@ import {getLocaleDateFormat, Location} from '@angular/common';
 import {switchMap} from 'rxjs/operators';
 import {Comment} from '../shared/comment';
 import { parseHostBindings } from '@angular/compiler';
+import{trigger, state, style, animate, transition} from '@angular/animations';
 
 
 
 @Component({
   selector: 'app-dishdetail',
   templateUrl: './dishdetail.component.html',
-  styleUrls: ['./dishdetail.component.scss']
+  styleUrls: ['./dishdetail.component.scss'],
+  animations:[
+    trigger('visibility',[
+      state('show', style({
+        transform: 'scale(1.0)',
+        opacity: 1
+      })),
+      state('hidden',style({
+        transform: 'scale(0.5)',
+        opacity:0
+      })),
+      transition('* =>*', animate('0.5s ease-in-out'))
+    ])
+  ]
 })
 
 export class DishdetailComponent implements OnInit {
@@ -29,6 +43,7 @@ export class DishdetailComponent implements OnInit {
   };
   dishcopy:Dish;
   dish:Dish;
+  visibility='show';
   dishIds: string[];
   prev: string;
   next: string;
@@ -55,8 +70,8 @@ export class DishdetailComponent implements OnInit {
 
   ngOnInit(): void {
     this.dishService.getDishId().subscribe(dishIds=> this.dishIds = dishIds);
-    this.route.params.pipe(switchMap((params: Params)=>this.dishService.getDish(params['id'])))
-    .subscribe(dish=>{this.dish = dish, this.dishcopy = dish;this.setPrevNext(dish.id), errMess => this.errMess = <any>errMess})
+    this.route.params.pipe(switchMap((params: Params)=>{this.visibility= 'hidden'; return this.dishService.getDish(params['id'])}))
+    .subscribe(dish=>{this.dish = dish, this.dishcopy = dish; this.setPrevNext(dish.id); this.visibility = 'show'}, errMess => this.errMess = <any>errMess)
     
   }
 
