@@ -50,7 +50,7 @@ export function expand(){
             }),
             animate('250ms ease-in', style({
                 opacity:1,
-                transform: 'translatex(0)'
+                transform: 'translateX(0)'
             }))
         ])
     ])

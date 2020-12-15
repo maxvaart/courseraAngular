@@ -22,6 +22,8 @@ import {flyInOut,expand} from '../animations/app.animations';
 export class HomeComponent implements OnInit {
   dish : Dish;
   dishErrMess: string;
+  leaderErrMess:string;
+  promotionErrMess:string;
   promotion: Promotion;
   leader: Leader;
   constructor(private dishService : DishService , private promotionService : PromotionService, private leaderService : LeadersService, @Inject('BaseURL') public BaseURL) { }
@@ -30,9 +32,9 @@ export class HomeComponent implements OnInit {
     this.dishService.getFeaturedDish()
     .subscribe(dish => this.dish = dish, errMess => this.dishErrMess = <any>this.dishErrMess);
     this.promotionService.getFeaturedPromotion()
-    .subscribe (promotion => this.promotion = promotion);
+    .subscribe (promotion => this.promotion = promotion, promotionErrMess => this.promotionErrMess=<any>this.promotionErrMess);
     this.leaderService.getFeatureLeader()
-    .subscribe(leader => this.leader = leader);
+    .subscribe(leader => this.leader = leader, errMes => this.leaderErrMess=<any>this.leaderErrMess);
   }
 
 }

@@ -2,7 +2,8 @@ import { IfStmt } from '@angular/compiler';
 import { Component, OnInit, ViewChild } from '@angular/core';
 import {FormBuilder, FormGroup, Validators} from '@angular/forms';
 import {Feedback,ContactType} from '../shared/feedback';
-import {flyInOut} from '../animations/app.animations';
+import {flyInOut, visibility,expand} from '../animations/app.animations';
+import {FeedbackService} from '../services/feedback.service';
 
 @Component({
   selector: 'app-contact',
@@ -13,14 +14,27 @@ import {flyInOut} from '../animations/app.animations';
     'style':'display:block'
   },
   animations:[
-    flyInOut()
+    flyInOut(),expand()
   ]
 })
 export class ContactComponent implements OnInit {
   @ViewChild('fform') feedbackFormDirectives;
   feedbackForm: FormGroup;
   feedback: Feedback;
+  formHidden: boolean = false;
+  feedbackCopy:Feedback = {
+      firstname: "",
+      lastname: "",
+      telnum: 0,
+      email:"",
+      agree: false,
+      contacttype: 'None',
+      message:''
+  };
+  feedbacksBase:Feedback[];
+  feedbackNow:Feedback;
   contactType = ContactType;
+  errMess:string;
   formErrors = {
     'firstname' : '',
     'lastname': '',
@@ -47,7 +61,7 @@ export class ContactComponent implements OnInit {
       'email':         'Email not in valid format.'
     },
   };
-  constructor( private fb : FormBuilder) { 
+  constructor( private fb : FormBuilder, private FeedbackService: FeedbackService) { 
     this.createForm();
   }
 
@@ -70,8 +84,16 @@ export class ContactComponent implements OnInit {
   }
 
   onSubmit(){
+    this.formHidden = true;
     this.feedback = this.feedbackForm.value;
+    this.FeedbackService.putFeedback(this.feedback)
+    .subscribe(feedback=>{
+      this.feedback = feedback;
+      this.feedbackCopy =  this.feedback;
+    },errMess => {this.feedback= null; this.errMess = <any>errMess})
     console.log(this.feedback);
+    this.FeedbackService.getFeedbacks()
+    .subscribe(feedbacks=> this.feedbacksBase = feedbacks )
     this.feedbackForm.reset({
       firstname: '',
       lastname: '',
@@ -81,9 +103,20 @@ export class ContactComponent implements OnInit {
       contacttype: 'None',
       message: ''
     });
-    this.feedbackFormDirectives.resetForm();
+    setTimeout(()=>{this.feedbackCopy = {
+      firstname: null,
+      lastname: "",
+      telnum: 0,
+      email:"",
+      agree: false,
+      contacttype: 'None',
+      message:''} , 
+      this.formHidden = false;
+    } ,5000);
+    this.feedbacksBase = null;
   }
-  
+    
+
   onValueChanged(data?:any){
     if(!this.feedbackForm){return};
     const form = this.feedbackForm;
@@ -102,4 +135,5 @@ export class ContactComponent implements OnInit {
       }
     }
   }
+  
 }
